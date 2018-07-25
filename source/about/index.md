@@ -24,32 +24,32 @@
 
 支撑系统中16台 mongdb DB servers,52台MySQL DB servers和42台Oracle DB servers,其中有4套mongdb replica sets集群,12套MySQL Galera集群和3套master-slave replication,2套rac环境的多租户数据库,5套RAC集群,2套DataGurad,4套GoldenGate；
 
-###数据结构方面
+### 数据结构方面
 审查schema变更，编写变更发布脚本，审核DML语句发布脚本。
 
-###升级方面
+### 升级方面
 DB(Oracle/MySQL/MongoDB)打补丁和升级
 支撑系统部门操作系统打补丁
 
-###安全方面 
+### 安全方面 
 Oracle代理CMAN升级和维护;Oracle password加密(wallet)；对敏感数据脱敏/升级/权限控制。
 Maxscale代理升级和维护；MySQL SSL加密研究测试部署;MySQL 审计插件的测试使用。
 MongoDB加密的key的rotate。
 
-###优化方面
+### 优化方面
 优化性能语句；每周定时审核性能报告；协助压力测试定位性能问题。
 
-###高可用
+### 高可用
 Oracle安装配置DGMGR,编写操作脚本；安装配置维护GoldenGate,编写维护脚本；
 MySQL编写数据快速平滑迁移脚本
 
-###wherescape etl 
+### wherescape etl 
 处理etl工具wherescape故障，如JOB block住等问题；
 
-###脚本方面 
+### 脚本方面 
 编写Linux Crontab Job日志收集程序及JOB运行状态报表；重构公用脚本，如空间监控，警告日志监控，备份脚本等；编写DB(Oracle/MySQL/MongoDB)灾备切换脚本；MySQL主从心跳/数据比较，修复脚本;编写批量部署脚本。
 
-###文档
+### 文档
 编写数据库升级维护文档；编写灾备切换文档；编写MySQL数据比较修复文档等。
 
 
