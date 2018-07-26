@@ -13,7 +13,7 @@ tags:
 
 ---
 
-## 1. MONGODB自带SHELL客户端
+##  MONGODB自带SHELL客户端
 
 ````
 ## 切换到mongo账号
@@ -111,7 +111,7 @@ bye
 tst01 mongod>
 ````
 
-## 2. 创建/删除数据库
+##  创建/删除数据库
 1.创建数据库语法
 如果数据库不存在，则指向数据库，但不创建（等待实际数据入库时创建），否则切换到指定数据库。
 ```
@@ -159,7 +159,7 @@ local    0.000GB
 MongoDB Enterprise >
 ```
 
-## 3. 创建/删除集合
+##  创建/删除集合
 1.创建集合语法
 ```
 db.createCollection(name, options)
@@ -249,7 +249,7 @@ MongoDB Enterprise > db.getCollectionNames()
 MongoDB Enterprise >
 ```
 
-## 4. 数据类型
+##  数据类型
 下表为MongoDB中常用的几种数据类型。
 * String : 这是最常用的数据类型来存储数据。在MongoDB中的字符串必须是有效的UTF-8
 * Integer : 这种类型是用来存储一个数值。整数可以是32位或64位，这取决于您的服务器
@@ -267,7 +267,7 @@ MongoDB Enterprise >
 * Code : 此数据类型用于存储到文档中的JavaScript代码
 * Regular expression : 此数据类型用于存储正则表达式
 
-## 5. 插入文档
+##  插入文档
 要插入数据到 MongoDB 集合，需要使用 MongoDB 的 insert() 或 save() 方法。
 对应的语法分别如下：
 ```
@@ -369,9 +369,9 @@ db.mycoltwo.insert(
 ```
 ![](MongoDB基础操作/jc_1.png)
 
-## 6. 查询文档
+##  查询文档
 
-### 6.1 基础查询语法
+### 基础查询语法
 基本的find()方法语法如下
 ```
 db.collection.find(query, projection)
@@ -497,7 +497,7 @@ MongoDB Enterprise > db.mycol.find({"by":"lt50"},{"title":1,"by":1})
 { "_id" : ObjectId("5b12d4821f0853ff9e2fe050"), "title" : "oracle", "by" : "lt50" }
 ```
 
-### 6.2 Limit和Skip
+### Limit和Skip
 如果你需要在MongoDB中读取指定数量的数据记录，可以使用MongoDB的Limit方法，limit()方法接受一个数字参数，该参数指定从MongoDB中读取的记录条数。
 limit()方法基本语法如下所示：
 ```
@@ -520,7 +520,7 @@ MongoDB Enterprise > db.mycol.find().skip(2).limit(1)
 { "_id" : ObjectId("5b12d4821f0853ff9e2fe04f"), "title" : "sqlserver", "description" : "sqlserver is sql database", "by" : "lt50", "url" : "http://www.itcast.cn", "tags" : [ "sqlserver", "database", "SQL" ], "likes" : 40 }
 ```
 
-### 6.3 MONGODB排序/distinct
+### MONGODB排序/distinct
 
 在MongoDB中使用使用sort()方法对数据进行排序，sort()方法可以通过参数指定排序的字段，并使用 1 和 -1 来指定排序的方式，其中 1 为升序排列，而-1是用于降序排列。
 sort()方法基本语法如下所示：
@@ -555,9 +555,9 @@ MongoDB Enterprise > db.mycol.distinct("title")
 [ "New MongoDB Tutorial", "MySQL Overview", "sqlserver", "oracle" ]
 ```
 
-### 6.4 MONGODB聚合
+### MONGODB聚合
 
-#### 6.4.1 aggregate语法
+#### aggregate语法
 MongoDB中聚合(aggregate)主要用于处理数据(诸如统计平均值,求和等)，并返回计算后的数据结果。有点类似sql语句中的 count(*), sum(), avg()。
 
 aggregate()语法
@@ -603,7 +603,7 @@ MongoDB Enterprise >
 db.mycol.aggregate([{$group : {_id : {by:"$by",url:"$url"}, num_tutorial : {$sum : "$likes"}}}])
 ```
 
-#### 6.4.2 管道
+#### 管道
 
 管道在Unix和Linux中一般用于将当前命令的输出结果作为下一个命令的输入。如下：
 ```
@@ -642,7 +642,7 @@ Select cust_id,sum(amount)as total from orders where status= "A" group by cust_i
 * $sort：将输入文档排序后输出。
 * $lookup :joined集合中的匹配文档。
 
-##### 6.4.2.1 $project
+##### $project
 修改输入文档的结构。可以用来重命名、增加或删除字段(域)，也可以用于创建计算结果以及嵌套文档。
 思考，现有books集合内容如下：
 ```
@@ -685,7 +685,7 @@ lastName: "$author.last", copiesSold: "$copies" } } ] )
 ```
 
 
-##### 6.4.2.2 $match
+##### $match
 用于过滤数据，只输出符合条件的文档。$match使用MongoDB的标准查询操作。
 示例
 ```
@@ -712,7 +712,7 @@ db.articles.aggregate( [ { $match: { $or: [ { score: { $gt: 70, $lt: 90 } },
 { $group: { _id: null, count: { $sum: 1 } } } ] )
 ```
 
-##### 6.4.2.3 $group
+##### $group
 将集合中的文档分组，可用于统计结果。
 示例
 ```
@@ -764,7 +764,7 @@ db.articles.aggregate(
 )
 ```
 
-##### 6.4.2.4 $unwind
+##### $unwind
 将文档中的某一个数组类型字段拆分成多条，每条包含数组中的一个值
 语法
 ```
@@ -792,7 +792,7 @@ db.shoes.aggregate( [ { $unwind: { path: "$sizes",preserveNullAndEmptyArrays:tru
 db.shoes.aggregate( [ { $unwind: { path: "$sizes", includeArrayIndex: "arrayIndex" } } ] )
 ```
 
-##### 6.4.2.4 $lookup
+##### $lookup
 执行左连接到一个集合(unsharded)，必须在同一数据库中
 $lookup添加了一个新的数组字段，该字段的元素是joined集合中的匹配文档。
 
@@ -843,7 +843,7 @@ db.products.insert([ { "_id" : 1, "sku" : "abc", description: "product 1", "inst
 db.orders.aggregate([ { $lookup: { from: "products", localField: "item", foreignField: "sku", as: "product_docs" } } ]).pretty()
 ```
 
-##### 6.4.2.4 $out
+##### $out
 输出到集合
 ```
 db.orders.aggregate([ { $lookup: { from: "products", localField: "item", foreignField: "sku", as: "product_docs" } },
@@ -852,7 +852,7 @@ db.orders.aggregate([ { $lookup: { from: "products", localField: "item", foreign
 db.order_details.find()
 ```
 
-## 7. 更新/删除文档
+## 更新/删除文档
 MongoDB 使用 update() 和 save() 方法来更新集合中的文档。接下来让我们详细来看下两个函数的应用及其区别。
 update() 方法的基本语法如下:
 ```
@@ -997,7 +997,7 @@ MongoDB Enterprise > db.mycol.find()
 MongoDB Enterprise >
 ```
 
-## 8. 索引
+## 索引
 
 索引通常能够极大的提高查询的效率，如果没有索引，MongoDB在读取数据时必须扫描集合中的每个文档并选取那些符合查询条件的记录。
 这种扫描全集合的查询效率是非常低的，特别在处理大量的数据时，查询可以要花费几十秒甚至几分钟，这对网站的性能是非常致命的。

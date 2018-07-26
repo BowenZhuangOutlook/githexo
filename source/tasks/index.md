@@ -74,25 +74,30 @@
 
 
 ## 自我反省思考
-* 收集目前工作DB状况信息(部分信息收集写成脚本信息) **--> 截止日期 20180729**
-	* 并发量(低峰高峰平均值)
-	* DB大小，表大小(最大表/最小表)，表数量
-	* DB版本信息，patch信息和DB组件信息
-	* DB构架
-	* 备份策略
-	* 控制文件和redo日志文件信息
-	* 字符集
-	* 用户和密码配置，资源配置信息
-	* 系统无效对象 
-* 思考自己的优势和缺点                         **--> 截止日期 20180731**
-* 为自己的职业规划做了什么准备(罗列出计划)       **--> 截止日期 20180728** 
-	* 硬件方面学习准备
-	* 建模方面学习准备
-* 引导常规知识点的准备                         **--> 截止日期 20180729** 
-	* 常见DB监控指标的分类和罗列
-* DB选型的依据(优势和劣势)                     **--> 截止日期 20180731** 
-	* MongoDB
-	* MySQL
-	* Oracle
-	* Redis
-	* MemoryCache
+|类别|内容|截止日期|状态|说明|
+| :------| :------|
+|收集目前工作DB状况信息(部分信息收集写成脚本信息)|&nbsp;|20180729|New|#NA
+|&nbsp;|并发量(低峰高峰平均值)|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|DB大小，表大小(最大表/最小表)，表数量|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|DB版本信息，patch信息和DB组件信息|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|DB构架|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|备份策略|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|控制文件和redo日志文件信息|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|字符集|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|用户和密码配置，资源配置信息|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|系统无效对象|&nbsp;|&nbsp;|&nbsp;
+|思考自己的优势和缺点|&nbsp;|20180731|New|#NA
+|为自己的职业规划做了什么准备(罗列出计划)|&nbsp;|20180728|New|#NA
+|&nbsp;|硬件方面学习准备|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|建模方面学习准备|&nbsp;|&nbsp;|&nbsp;
+|引导常规知识点的准备|&nbsp;|20180729|New|#NA
+|&nbsp;|常见DB监控指标的分类和指标|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|内存参数|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|重要参数|&nbsp;|&nbsp;|&nbsp;
+|DB选型的依据(优势和劣势)|&nbsp;|20180731|New|#NA
+|&nbsp;|MongoDB|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|MySQL|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|Oracle|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|Redis/MemoryCache|&nbsp;|&nbsp;|&nbsp;
+|数据库管理/发布/维护制度;围绕的那几个维度展开|&nbsp;|20180803|New|#NA
+|运维自动化;采用基础技术框架;围绕那几个维度展开|&nbsp;|20180805|New|#NA
