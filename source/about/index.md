@@ -117,7 +117,7 @@ Windows平台下Oracle DB到Red Had Linux平台的迁移，并搭建DataGuard灾
 	- MongoDB Query 优化
 - 版本管理、文档和自动化部署工具：Svn/Markdown/Ansible
 - 建模工具: ERwin Designer/PowerDesigner/Oracle SQL Developer Data Modeler
-- 编写语句: SQL/PLSQL/SHELL/Python/Java
+- 编程语言: SQL/PLSQL/SHELL/Python/Java
 
 
 ------------
