@@ -94,10 +94,11 @@
 |&nbsp;|常见DB监控指标的分类和指标|&nbsp;|&nbsp;|&nbsp;
 |&nbsp;|内存参数|&nbsp;|&nbsp;|&nbsp;
 |&nbsp;|重要参数|&nbsp;|&nbsp;|&nbsp;
-|DB选型的依据(优势和劣势)|&nbsp;|20180731|New|#NA
+|DB选型的依据(优势和劣势分析)|&nbsp;|20180731|New|#NA
 |&nbsp;|MongoDB|&nbsp;|&nbsp;|&nbsp;
 |&nbsp;|MySQL|&nbsp;|&nbsp;|&nbsp;
 |&nbsp;|Oracle|&nbsp;|&nbsp;|&nbsp;
 |&nbsp;|Redis/MemoryCache|&nbsp;|&nbsp;|&nbsp;
+|&nbsp;|Greenplum|&nbsp;|&nbsp;
 |数据库管理/发布/维护制度;围绕的那几个维度展开|&nbsp;|20180803|New|#NA
 |运维自动化;采用基础技术框架;围绕那几个维度展开|&nbsp;|20180805|New|#NA
