@@ -70,3 +70,40 @@ The MySQL server's data directory to store all the following:
 * The mysqld_multi script has a stop command and can shut down any of the servers that it manages. It does so by invoking mysqladmin
 
 **note:** mysqld_safe has no server shutdown capability. You can use mysqladmin shutdown instead. Note that if you forcibly terminate mysqld by using the kill -9 command to send it a signal, mysqld_safe will detect that mysqld terminated abnormally and will restart it. You can work around this by killing mysqld_safe first and then mysqld, but it's better to use mysqladmin shutdown, which initiates a normal (clean) server shutdown.
+
+## Log and status Files
+* The general query log records all statements that the server receives from clients. use --log or --log=file_name
+* The binary log records statements that modify data. use --log-bin or --log-bin=file_name . wen can use mysqlbinlog utility dump bin log context.
+* The slow query log contains a record of queries that take a long time to execute. use --log-slow-queries or --log-slow-queries=file_name.we can use mysqldumpslow utility analysis slow query.
+* The Error Log. Alert log file
+* Status Files. PID file
+
+
+## Client Programs for DBA Work
+* mysql is a general-purpose command-line client for sending SQL statements to the server, including those of an administrative nature.
+* mysqladmin is an administrative command-line client that helps you manage the server.
+* mysqlimport provides a command-line interface to the LOAD DATA INFILE statement. It is used to load data files into tables without having to issue LOAD DATA INFILE statements yourself. mysqlimport can load files located on the client host or on the server host. It can load tables managed by local or remote servers.
+* mysqldump is a command-line client for dumping the contents of databases and tables. It's useful for making backups or for copying databases to other machines.
+
+### mysqladmin
+The mysqladmin command-line client is designed specifically for administrative operations. Its capabilities include those in the following list:
+* "Ping" the server to see whether it's running and accepting client connections
+* Shut down the server
+* Create and drop databases
+* Display server configuration and version information
+* Display or reset server status variables
+* Set passwords
+* Reload the grant tables
+* Flush the log files or various server caches
+* Start or stop replication slave servers
+* Display information about client connections or kill connections
+
+### mysqldump
+* Table contents dumped to data files can be dumped only on the server host, so when using mysqldump this way, it's best to invoke it on the server host.
+* When using mysqldump to produce SQL-format dump files, the server transfers table contents to mysqldump, which writes the dump file locally on the client host. SQL-format dumps can be generated for tables managed by local or remote servers.
+
+## Client Program Limitations
+* mysqladmin can create or drop databases, but it has no capabilities for creating or dropping individual tables or indexes. It can change passwords, but cannot create or delete user accounts. The mysql and MySQL Administrator programs can perform all of these operations
+* mysqlimport loads data files, so it can load data files produced by mysqldump. However, mysqldump also can produce SQL-format dump files containing INSERT statements, and mysqlimport cannot load those files. Thus, mysqlimport is only a partial complement to mysqldump. To process dump files containing SQL statements, use mysql instead.
+* With one exception, none of the client programs can start the server. Normally, you invoke the server directly or by using a startup script, or you can arrange to have the operating system invoke the server as part of its system startup procedure
+* None of the clients discussed in this chapter can shut down the server except mysqladmin and MySQL Administrator. mysqladmin shuts down the server by using a special non-SQL capability of the client/server protocol. If you use an account that has the SHUTDOWN privilege, it can shut down local or remote servers. MySQL Administrator can shut down a local MySQL server on Windows if the server is configured to run as a Windows service
