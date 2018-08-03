@@ -113,3 +113,13 @@ The mysqladmin command-line client is designed specifically for administrative o
 2. On the other hand, if stored string values vary in length, a variable-length data type takes less space. If values range from 0 to 32 characters with an average of about 16 characters, CHAR(32) values require 32 characters, whereas VARCHAR(32) requires 16 characters plus one byte on average. Here, VARCHAR requires only about half as much storage as CHAR. --> compare CHAR and VARCHAR, when vary length type.
 3. For multi-byte character sets that have variable-length encoding, a variable-length data type may be appropriate even if stored values always have the same number of characters. The utf8 character set uses one to three bytes per characters. For fixed-length data types, three bytes per character must always be allocated to allow for the possibility that every character will require the "widest" encoding. Thus, CHAR(32) requires 96 bytes, even if most stored values contain 32 single-byte characters. For variable-length data types, only as much storage is allocated as required. In a VARCHAR(32) column, a 32-character string that consists entirely of three-byte characters requires 96 bytes plus a length byte, whereas it requires only 32 bytes plus a length byte if the string consists entirely of single-byte characters. --> compare CHAR and VARCHAR, when multi-byte character sets,e.g utf8 vs ucs2
 4. If you have a choice between multi-byte character sets, choose the one for which the most commonly used characters take less space. For example, the utf8 and utc2 character sets both can be used for storing Unicode data. In utf8, characters take from one to three bytes, but most non-accented Latin characters take one byte. In ucs2, every character takes two bytes. Therefore, if the majority of your characters are non-accented characters, you'll likely achieve a space savings by using utf8 rather than ucs2. This assumes the use of a variable-length data type such as VARCHAR(n). If you use a fixed-length type such as CHAR(n), stored values require n x 3 bytes for utf8 and only n x 2 bytes for ucs2, regardless of the particular characters in stored values. --> we need to know how many bytes the character takes. e.g utf-8 take one to three bytes, then ucs2 take two types.
+
+## Storage Engines
+* MyISAM
+* Merge
+* InnoDB
+* MEMORY
+* FEDERATED
+* Cluster Storage Engine
+
+### MyISAM Engine
