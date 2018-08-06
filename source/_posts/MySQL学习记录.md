@@ -123,3 +123,34 @@ The mysqladmin command-line client is designed specifically for administrative o
 * Cluster Storage Engine
 
 ### MyISAM Engine
+* MyISAM containe three type file:mytable.frm, mytable.MYD, and mytable.MYI
+* MyISAM has the most flexible AUTO_INCREMENT column handling of all the storage engines
+* MyISAM tables can be used to set up MERGE tables
+* MyISAM tables can be converted into fast, compressed, read-only tables to save space.
+* MyISAM supports FULLTEXT searching and spatial data types.
+* MySQL manages contention between queries for MyISAM table access using table-level locking. Query performance is very fast for retrievals. Multiple queries can read the same table simultaneously. For a write query, an exclusive table-level lock is used to prevent use of the table by other read or write queries, leading to reduced performance in environments with a mix of read and write queries. Deadlock cannot occur with table-level locking.
+* You can influence the scheduling mechanism for queries that use MyISAM tables by using a query modifier such as LOW_PRIORITY or HIGH_PRIORITY. Inserts into a table can be buffered on the server side until the table isn't busy by using INSERT DELAYED; this allows the client to proceed immediately instead of blocking until the insert operation completes
+* The table storage format is portable, so table files can be copied directly to another host and used by a server there
+* You can specify that a MyISAM table must be able to hold at least a certain number of rows, which allows MyISAM to adjust the table's internal row pointer size accordingly. It's also possible to configure the default pointer size that the server uses
+* When loading data into an empty MyISAM table, you can disable updating of non-unique indexes and enable the indexes after loading. This is faster than updating the indexes for each row inserted. In fact, when LOAD DATA INFILE is used for loading an empty MyISAM table, it automatically disables and enables index updating. LOAD DATA INFILE is faster than INSERT anyway, and this optimization speeds it up even more.
+* If you run out of disk space while adding rows to a MyISAM table, no error occurs. The server suspends the operation until space becomes available, and then completes the operation.
+* Three Row-Storage formats:
+  * Fixed-row format: All rows have the same size;Rows are stored within the table at positions that are multiples of the row size, making them easy to look up;Fixed-size rows take more space
+  * Dynamic-row format: Rows take varying amounts of space;Rows cannot be looked up as efficiently;Dynamic-rows tables usually take less space because rows are not padded to a fixed size;Fragmentation can occur more easily than for fixed-row tables
+  * Compressed format: Tables are packed to save space;Storage is optimized for quick retrieval;Tables are read-only
+
+
+### Merge Engine
+* A MERGE table is a collection of identically structured MyISAM tables. Each MERGE table is represented on disk by an .frm format file and an .MRG file that lists the names of the constituent MyISAM files. Both files are located in the database directory.
+* Logically, a query on a MERGE table acts as a query on all the MyISAM tables of which it consists.
+* A MERGE table creates a logical entity that can exceed the maximum MyISAM table size.
+* MySQL manages contention between queries for MERGE table access using table-level locking (including locking of the underlying MyISAM tables). Deadlock cannot occur
+* A MERGE table is portable because the .MRG file is a text file and the MyISAM tables that it names are portable
+* The MERGE engine supports SELECT, DELETE, UPDATE, and INSERT statements. For INSERT, the CREATE TABLE statement can specify whether records should be inserted into the first or last table, or disallowed.
+
+####  MERGE tables do have some *disadvantages*:
+* They increase the number of file descriptors required because each of the underlying tables must be opened along with the MERGE table
+* It's slower to read indexes because MySQL has to search the indexes of multiple tables.
+
+
+### InnoDB Engine
