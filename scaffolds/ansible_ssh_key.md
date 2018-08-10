@@ -56,3 +56,28 @@ chmod 600 authorized_keys
 chmod 600 id_rsa
 chmod 400 id_rsa.pub
 chmod 644 known_hosts
+
+
+
+Ansible common operation reference
+
+#get ansible inventory group name
+ansible localhost -m debug -a 'var=groups.keys()'
+#get ansible host list by group name
+ansible MGDEV --list-host
+#get MG* host list except MGDEV contain host
+ansible MG*:\!MGDEV --list-host
+#for mysql,please execute a similar command  
+ansible MYDEV -m ping -u mysql
+#for mongod,please execute a similar command  
+ansible MYDEV -m ping -u mongod
+#for oracle/proxy,please execute a similar command  
+ansible MYDEV -m ping -u oracle
+#get information
+ansible CDWPROD -m shell -a 'free -g' -u oracle
+#copy file to remote host
+ansible MYDEV -m copy -a 'src=dbjobfunctions dest=/u01/app/mysql/script/dbjob/dbjobfunctions mode=0777' -u mysql
+#execute remote script
+ansible MYDEV -m shell -a '/home/mysql/work/bowenz/mv_dbjobfunc.sh ' -u mysql
+#get remote file detail information: actime/ctime/mtime，md5，uid，gid
+ansible MYDEV -m stat -a "path=/etc/my.cnf" -u mysql
