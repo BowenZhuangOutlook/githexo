@@ -81,3 +81,31 @@ ansible MYDEV -m copy -a 'src=dbjobfunctions dest=/u01/app/mysql/script/dbjob/db
 ansible MYDEV -m shell -a '/home/mysql/work/bowenz/mv_dbjobfunc.sh ' -u mysql
 #get remote file detail information: actime/ctime/mtime，md5，uid，gid
 ansible MYDEV -m stat -a "path=/etc/my.cnf" -u mysql
+#tar remote server folder
+ansible PROD:CDWPROD:RRSPROD -m shell -a 'cd /u01/app/oracle/report && zip -r /tmp/baseline.zip baseline' -u oracle
+#get remote server files or folder
+ansible PROD:CDWPROD:RRSPROD -m fetch -a 'src=/tmp/baseline.zip dest=/home/oracle/work/bowenz/baseline/{{ inventory_hostname }}/ flat=yes' -u oracle
+#batch get files from remote server
+---
+- hosts: '{{ hosts }}'
+  tasks:
+  - name: find compare baseline files
+    find:
+     paths: /u01/app/oracle/report
+     patterns: compare_baseline*
+     recurse: no
+    register: file_2_fetch
+  - name: pull compare files from remote node
+    fetch:
+     src: "{{ item.path }}"
+     dest: /home/oracle/work/bowenz/compare_baseline/{{ inventory_hostname }}/
+     flat: yes
+    with_items: "{{ file_2_fetch.files }}"
+
+ansible-playbook pull.yml --extra-vars "hosts=abprdb01" -v -u oracle
+
+###get baseline for company
+ansible PROD:CDWPROD:RRSPROD -m shell -a 'cd /u01/app/oracle/report/ && zip -r /tmp/baseline.zip baseline' -u oracle
+ansible PROD:CDWPROD:RRSPROD -m fetch -a 'src=/tmp/baseline.zip dest=/home/oracle/work/bowenz/baseline/{{ inventory_hostname }}/ flat=yes' -u oracle
+ansible MGPROD -m shell -a 'cd /home/mongod/report/ && zip -r /tmp/baseline.zip baseline' -u mongod
+ansible MGPROD -m fetch -a 'src=/tmp/baseline.zip dest=/home/oracle/work/bowenz/baseline/{{ inventory_hostname }}/ flat=yes' -u mongod
