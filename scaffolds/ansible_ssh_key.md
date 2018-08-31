@@ -103,6 +103,8 @@ ansible PROD:CDWPROD:RRSPROD -m fetch -a 'src=/tmp/baseline.zip dest=/home/oracl
     with_items: "{{ file_2_fetch.files }}"
 
 ansible-playbook pull.yml --extra-vars "hosts=abprdb01" -v -u oracle
+#execute localhost script on remote node
+ansible MYDEV -m script -a '/home/mysql/get.sh' -u mysql
 
 ###get baseline for company
 ansible PROD:CDWPROD:RRSPROD -m shell -a 'cd /u01/app/oracle/report/ && zip -r /tmp/baseline.zip baseline' -u oracle
