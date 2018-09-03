@@ -1,0 +1,47 @@
+
+# get archive log size per day and instances
+SELECT
+  INST_ID,
+  TRUNC(COMPLETION_TIME) TIME,
+  SUM(BLOCKS * BLOCK_SIZE)/1024/1024/1024 SIZE_GB
+FROM gV$ARCHIVED_LOG
+where STANDBY_DEST='NO'
+and name is not null
+and COMPLETION_TIME >= sysdate -30
+GROUP BY TRUNC(COMPLETION_TIME),INST_ID
+ORDER BY INST_ID,time desc;
+
+#get archive log size per day
+SELECT
+  TRUNC(COMPLETION_TIME) TIME,
+  SUM(BLOCKS * BLOCK_SIZE)/1024/1024/1024 SIZE_GB
+FROM gV$ARCHIVED_LOG
+where STANDBY_DEST='NO'
+and name is not null
+and COMPLETION_TIME >= sysdate -30
+GROUP BY TRUNC(COMPLETION_TIME)
+ORDER BY time desc;
+
+#get archive log size per week
+SELECT
+  TRUNC(COMPLETION_TIME,'IW') TIME,
+  SUM(BLOCKS * BLOCK_SIZE)/1024/1024/1024 SIZE_GB
+FROM gV$ARCHIVED_LOG
+where STANDBY_DEST='NO'
+and name is not null
+and COMPLETION_TIME >= sysdate -30
+GROUP BY trunc(COMPLETION_TIME,'IW')
+ORDER BY time desc;
+
+#get avg archive log size per week
+SELECT SUM(size_gb)/COUNT(*) avg_per_week,
+  MAX(size_gb) max_per_week
+FROM
+  (SELECT TRUNC(COMPLETION_TIME,'IW') TIME,
+    SUM(BLOCKS * BLOCK_SIZE)/1024/1024/1024 SIZE_GB
+  FROM gV$ARCHIVED_LOG
+  WHERE STANDBY_DEST='NO'
+  and name is not null
+  and COMPLETION_TIME >= sysdate -30
+  GROUP BY TRUNC(COMPLETION_TIME,'IW')
+  ) ;
