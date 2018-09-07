@@ -1,0 +1,10 @@
+#purge mssql log
+--Check log file status: 0 can be shrink
+DBCC LOGINFO('EHI_Medicare_Build');
+--Use command as follow to shrink logs
+use EHI_Medicare_Build;
+select * from sysfiles ; -- find the fileid which needed to be shrink
+DBCC SHRINKFILE (2,100, TRUNCATEONLY)
+--- then the log file is shrink to 100M
+https://msdn.microsoft.com/en-us/library/ms190763(v=sql.110).aspx
+use microsofe sqlserver 2012->sqlserver manage studio

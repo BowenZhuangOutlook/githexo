@@ -1,0 +1,92 @@
+#Get history information for pga
+select a.name,
+      round(max(a.value/1024/1024)) Max_Mb,
+      round(min(a.value/1024/1024)) Min_Mb,
+      trunc(b.BEGIN_INTERVAL_TIME) as daily
+from DBA_HIST_PGASTAT a, DBA_HIST_SNAPSHOT b
+where a.name='total PGA allocated'
+and a.snap_id = b.snap_id
+and a.instance_number = b.instance_number
+and a.dbid = b.dbid
+group by trunc(b.BEGIN_INTERVAL_TIME),a.name
+order by trunc(b.BEGIN_INTERVAL_TIME);
+
+#get avg archive log size per week
+SELECT SUM(size_gb)/COUNT(*) avg_per_week,
+  MAX(size_gb) max_per_week
+FROM
+  (SELECT TRUNC(COMPLETION_TIME,'IW') TIME,
+    SUM(BLOCKS * BLOCK_SIZE)/1024/1024/1024 SIZE_GB
+  FROM gV$ARCHIVED_LOG
+  WHERE STANDBY_DEST='NO'
+  and name is not null
+  and COMPLETION_TIME >= sysdate -30
+  GROUP BY TRUNC(COMPLETION_TIME,'IW')
+  ) ;
+
+  #get archive log size per day
+  SELECT
+    TRUNC(COMPLETION_TIME) TIME,
+    SUM(BLOCKS * BLOCK_SIZE)/1024/1024/1024 SIZE_GB
+  FROM gV$ARCHIVED_LOG
+  where STANDBY_DEST='NO'
+  and name is not null
+  and COMPLETION_TIME >= sysdate -30
+  GROUP BY TRUNC(COMPLETION_TIME)
+  ORDER BY time desc;
+
+#get session status with lock table and wait event
+SELECT /*+ rule */
+       s.inst_id,
+       case when s.final_blocking_session is not null and s.final_blocking_instance=s.inst_id  then
+           'Same Instance Blocking'
+           when  s.final_blocking_session is not null and s.final_blocking_instance<>s.inst_id then
+           'Diff Instanace Blocking'
+       end Blocking_Instance_type,
+       s.username,
+       s.osuser,
+       s.final_blocking_instance as blocking_inst_id,
+       s.final_blocking_session as blocking_sid,
+       s.sid,
+       s.serial#,
+       p.spid,
+       s.lockwait,
+       s.status,
+       s.sql_id,
+       s.prev_sql_id,
+       s.module,
+       s.machine,
+       s.program,
+       s.event,
+       Case
+         When s.final_blocking_session Is Not Null Then
+          (Select Object_Name
+             From Dba_Objects
+            Where Object_Id = s.Row_Wait_Obj#)
+       End Lock_Table,
+       Case
+         When s.final_blocking_session Is Not Null And
+              s.Event = 'enq: TX - row lock contention' Then
+          Dbms_Rowid.Rowid_Create(1,
+                                  s.Row_Wait_Obj#,
+                                  s.Row_Wait_File#,
+                                  s.Row_Wait_Block#,
+                                  s.Row_Wait_Row#)
+       End Lock_Rowid,
+       ss.username as blocking_username,
+       ss.status as blocking_status,
+       TO_CHAR(s.logon_Time,'YYYY-MM-DD HH24:MI:SS') AS logon_time,
+       s.last_call_et AS last_call_et_secs
+FROM   gv$session s,
+       gv$process p,
+       gv$session ss
+WHERE  s.paddr  = p.addr
+AND    s.status = 'ACTIVE'
+and    s.username is not null
+and    s.inst_id = p.inst_id
+and    ss.inst_id(+) = s.final_blocking_instance
+and    ss.sid(+) = s.final_blocking_session
+and    s.machine<>'XMLENG575'
+and    s.module<>'GoldenGate'
+and    s.event <>'PL/SQL lock timer'
+ORDER BY s.username, s.osuser; 

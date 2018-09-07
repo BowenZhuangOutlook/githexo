@@ -1,9 +1,11 @@
 #查找swap使用进程及使用大小
-```
 find /proc -maxdepth 2 -path "/proc/[0-9]*/status" -readable -exec awk -v FS=":" '{process[$1]=$2;sub(/^[ \t]+/,"",process[$1]);} END {if(process["VmSwap"] && process["VmSwap"] != "0 kB") printf "%10s %-30s %20s\n",process["Pid"],process["Name"],process["VmSwap"]}' '{}' \; | awk '{print $(NF-1),$0}' | sort -h | cut -d " " -f2-
-```
 
 #查看大页使用情况
-```
 grep Huge /proc/meminfo
-```
+
+#get top 10 cpu usage
+ps -eo pcpu,pid,user,args | sort -k1 -r | head -10
+
+#get port hostnames
+for ip in `netstat -ant |grep 33306| awk '{print $5}' | awk -F: '{print $1}'`; do echo ${ip} - `nslookup ${ip} | grep 'name =' | awk -F= '{print $2}'`; done | sort | uniq -c | sort -n
