@@ -111,3 +111,8 @@ ansible PROD:CDWPROD:RRSPROD -m shell -a 'cd /u01/app/oracle/report/ && zip -r /
 ansible PROD:CDWPROD:RRSPROD -m fetch -a 'src=/tmp/baseline.zip dest=/home/oracle/work/bowenz/baseline/{{ inventory_hostname }}/ flat=yes' -u oracle
 ansible MGPROD -m shell -a 'cd /home/mongod/report/ && zip -r /tmp/baseline.zip baseline' -u mongod
 ansible MGPROD -m fetch -a 'src=/tmp/baseline.zip dest=/home/oracle/work/bowenz/baseline/{{ inventory_hostname }}/ flat=yes' -u mongod
+
+
+## get pmm server status
+ansible MYDEV -m copy -a 'src=check_pmm.sh dest=/home/bowenz/check_pmm.sh mode=0777' -u bowenz -k
+ansible MYDEV -m shell -a '/home/bowenz/check_pmm.sh' -u bowenz -k 

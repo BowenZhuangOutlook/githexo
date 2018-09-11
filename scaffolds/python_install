@@ -9,3 +9,9 @@
 
 pip --trusted-host pypi.python.org install pexpect
 pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ pexpect
+pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ Django==1.8.3
+pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ mysql-python
+
+
+CREATE DATABASE IF NOT EXISTS bowenz DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+# -*- coding:utf-8 -*-
