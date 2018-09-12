@@ -12,6 +12,13 @@ pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/
 pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ Django==1.8.3
 pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ mysql-python
 
+pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ virtualenv
+pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ virtualenvwrapper-win
+pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ django==1.10.6
+pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ markdown
+pip --trusted-host mirrors.aliyun.com install -i http://mirrors.aliyun.com/pypi/simple/ pytz
+
+
 
 CREATE DATABASE IF NOT EXISTS bowenz DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 # -*- coding:utf-8 -*-
