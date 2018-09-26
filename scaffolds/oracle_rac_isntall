@@ -1,0 +1,102 @@
+sjengopdb01 INT1 > oracleasm listdisks
+PDISK100
+PDISK101
+PDISK200
+PDISKFS100
+VOTE100
+VOTE101
+VOTE102
+
+su - oracle
+mkdir -p /u01/app/grid/12.1.0.2
+mkdir -p /u01/app/oracle/product/12.1.0/dbhome_2
+cd /home/oracle/OracleSoftware/12.1.0.2
+unzip p21419221_121020_Linux-x86-64_5of10.zip
+unzip p21419221_121020_Linux-x86-64_6of10.zip
+unzip p21419221_121020_Linux-x86-64_1of10.zip
+unzip p21419221_121020_Linux-x86-64_2of10.zip
+
+
+oracleasm querydisk -p PDISK100
+oracleasm querydisk -p PDISK101
+oracleasm querydisk -p PDISK200
+oracleasm querydisk -p PDISKFS100
+oracleasm querydisk -p VOTE100
+oracleasm querydisk -p VOTE101
+oracleasm querydisk -p VOTE102
+
+
+/dev/xvdk1: LABEL="PDISK101" TYPE="oracleasm"
+/dev/xvdl1: LABEL="PDISK200" TYPE="oracleasm"
+/dev/xvdi1: LABEL="PDISKFS100" TYPE="oracleasm"
+
+/dev/xvdm1: LABEL="VOTE100" TYPE="oracleasm"
+/dev/xvdn1: LABEL="VOTE101" TYPE="oracleasm"
+/dev/xvdo1: LABEL="VOTE102" TYPE="oracleasm"
+
+
+
+dd if=/dev/zero of=/dev/xvdk1 bs=1M count=512
+dd if=/dev/zero of=/dev/xvdl1 bs=1M count=512
+dd if=/dev/zero of=/dev/xvdi1 bs=1M count=512
+dd if=/dev/zero of=/dev/xvdm1 bs=1M count=512
+dd if=/dev/zero of=/dev/xvdn1 bs=1M count=512
+dd if=/dev/zero of=/dev/xvdo1 bs=1M count=512
+
+oracleasm deletedisk
+
+oracleasm
+oracleasm renamedisk -f /dev/xvdk1 PDISK101
+oracleasm renamedisk -f /dev/xvdl1 PDISK200
+oracleasm renamedisk -f /dev/xvdm1 VOTE100
+oracleasm renamedisk -f /dev/xvdn1 VOTE101
+oracleasm renamedisk -f /dev/xvdo1 VOTE102
+
+
+
+
+
+as root
+xhost +
+su - oracle
+unset ORACLE_HOME
+unset ORA_CRS_HOME
+unset TNS_ADMIN
+unset ORA_NLS10
+cd /home/oracle/OracleSoftware/12.1.0.2/grid
+./runInstaller
+
+scan name: sjengopdb-scan.ehealthinsurance.com
+
+
+sjengopdb01.ehealthinsurance.com
+sjengopdb01-vip.ehealthinsurance.com
+
+sjengopdb02.ehealthinsurance.com
+sjengopdb02-vip.ehealthinsurance.com
+
+Y18cQmyGySDsSjTwMyDtSgS#
+
+/u01/app/grid/12.1.0.2/root.sh
+
+
+cd /home/oracle/OracleSoftware/12.1.0.2/database
+./runInstaller
+
+create acfs disk /u02
+asmca
+DGFS
+
+mkdir /u02
+chown oracle:oinstall /u02
+
+install GolenGate
+cd /home/oracle/OracleSoftware
+rpm -ivh jdk-8u162-linux-x64.rpm
+java -version
+
+
+
+/u01/app/grid/12.1.0.2/bin/crsctl query crs activeversion -f
+/u01/app/grid/12.1.0.2/bin/crsctl start rollingpatch
+/u01/app/grid/12.1.0.2/bin/crsctl stop rollingpatch

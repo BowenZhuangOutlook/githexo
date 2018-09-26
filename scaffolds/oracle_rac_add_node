@@ -1,0 +1,23 @@
+1. olsnodes -n -t -s(good node)
+2. rm -rf grid/oracle home
+3. srvctl stop vip -i badnode -f
+   srvctl remove vip -i badnode -f
+4. crsctl delete node -n badnode
+5. mv crsdata/crsconfig/xxx.xml
+6. /u01/app/grid/12.1.0.2/oui/bin/runInstaller -updateNodeList ORACLE_HOME=/u01/app/grid/12.1.0.2 "CLUSTER_NODES={sjengopdb02}"
+   /u01/app/oracle/product/12.1.0/dbhome_2/oui/bin/runInstaller -updateNodeList ORACLE_HOME=/u01/app/oracle/product/12.1.0/dbhome_2 "CLUSTER_NODES={sjengopdb02}"
+7. cd /u01/app/grid/12.1.0.2/addnode
+   ./addnode.sh "CLUSTER_NEW_NODES={sjengopdb01}" "CLUSTER_NEW_VIRTUAL_HOSTNAMES={sjengopdb01-vip}"
+8. cd $ORACLE_HOME/addnode
+   ./addnode.sh "CLUSTER_NEW_NODES={sjengopdb01}"
+9. dbca
+
+
+
+oracleasm
+
+oracleasm renamedisk -f /dev/xvdk1 PDISK101
+oracleasm renamedisk -f /dev/xvdl1 PDISK200
+oracleasm renamedisk -f /dev/xvdm1 VOTE100
+oracleasm renamedisk -f /dev/xvdn1 VOTE101
+oracleasm renamedisk -f /dev/xvdo1 VOTE102

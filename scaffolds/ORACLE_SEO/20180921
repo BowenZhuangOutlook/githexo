@@ -1,0 +1,123 @@
+--优化前
+SELECT DISTINCT APP.APPLICATION_ID, C.PRODUCTLINE_TYPE
+  FROM APPLICATION APP, MEMBER M, PHONE P, SELECTED_PLANS SP, CARRIER C
+ WHERE (APP.ALLIANCE_ID IS NULL OR
+       (APP.ALLIANCE_ID IS NOT NULL AND
+       APP.ALLIANCE_ID IN (SELECT ALLIANCE_ID
+                               FROM ALLIANCE_INFORMATION
+                              WHERE CATEGORY_ID != 33)))
+   AND APP.APPLICATION_ID = M.APPLICATION_ID
+   AND SP.APPLICATION_ID = APP.APPLICATION_ID
+   AND C.CARRIER_ID = SP.CARRIER_ID
+   AND M.MEMBER_NUMBER = 1
+   AND P.APPLICATION_ID = APP.APPLICATION_ID
+   AND C.PRODUCTLINE_TYPE IN ('MS', 'MC', 'MD', 'MA')
+   AND P.AREA_CODE = 001
+   AND P.PHONE_NUMBER = '001-0001'
+   AND APP.APPLICATION_ID <>15239167
+   AND UPPER(M.FIRST_NAME) LIKE 'FN'
+   AND UPPER(M.FIRST_NAME) NOT LIKE ('TES%');
+
+
+
+
+
+
+---优化后
+SELECT /*+leading(p,sp,c) use_nl(p app sp)*/  DISTINCT APP.APPLICATION_ID, C.PRODUCTLINE_TYPE
+  FROM APPLICATION APP, MEMBER M, PHONE P, SELECTED_PLANS SP, CARRIER C
+ WHERE (APP.ALLIANCE_ID IS NULL OR
+       (APP.ALLIANCE_ID IS NOT NULL AND
+       APP.ALLIANCE_ID IN (SELECT ALLIANCE_ID
+                               FROM ALLIANCE_INFORMATION
+                              WHERE CATEGORY_ID != 33)))
+   AND M.APPLICATION_ID = APP.APPLICATION_ID
+   AND SP.APPLICATION_ID = APP.APPLICATION_ID
+   AND P.APPLICATION_ID = SP.APPLICATION_ID
+   AND C.CARRIER_ID = SP.CARRIER_ID
+   AND M.MEMBER_NUMBER = 1
+   AND C.PRODUCTLINE_TYPE IN ('MS', 'MC', 'MD', 'MA')
+   AND P.AREA_CODE = 001
+   AND P.PHONE_NUMBER = '001-0001'
+   AND APP.APPLICATION_ID <>15239167
+   AND UPPER(M.FIRST_NAME) = 'FN';
+
+36 rows selected.
+
+Elapsed: 00:00:01.10
+
+Execution Plan
+----------------------------------------------------------
+Plan hash value: 846218730
+
+----------------------------------------------------------------------------------------------------------------
+| Id  | Operation                           | Name                     | Rows  | Bytes | Cost (%CPU)| Time     |
+----------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT                    |                          |     1 |    59 |  1059   (1)| 00:00:01 |
+|*  1 |  FILTER                             |                          |       |       |            |          |
+|   2 |   HASH UNIQUE                       |                          |     1 |    59 |  1059   (1)| 00:00:01 |
+|*  3 |    FILTER                           |                          |       |       |            |          |
+|*  4 |     FILTER                          |                          |       |       |            |          |
+|   5 |      NESTED LOOPS                   |                          |     1 |    59 |  1058   (1)| 00:00:01 |
+|   6 |       NESTED LOOPS                  |                          |    29 |    59 |  1058   (1)| 00:00:01 |
+|   7 |        NESTED LOOPS                 |                          |    29 |  1218 |  1000   (1)| 00:00:01 |
+|   8 |         NESTED LOOPS                |                          |    29 |   986 |   942   (1)| 00:00:01 |
+|   9 |          NESTED LOOPS               |                          |     2 |    50 |   940   (1)| 00:00:01 |
+|* 10 |           INDEX RANGE SCAN          | PHONE_NUMBER_IDX         |     2 |    28 |   936   (1)| 00:00:01 |
+|* 11 |           INDEX RANGE SCAN          | SELECTED_PLANS_AID_IDX   |     1 |    11 |     2   (0)| 00:00:01 |
+|* 12 |          TABLE ACCESS BY INDEX ROWID| CARRIER                  |    18 |   162 |     1   (0)| 00:00:01 |
+|* 13 |           INDEX UNIQUE SCAN         | XPK_CARRIER              |     1 |       |     0   (0)| 00:00:01 |
+|  14 |         TABLE ACCESS BY INDEX ROWID | APPLICATION              |     1 |     8 |     2   (0)| 00:00:01 |
+|* 15 |          INDEX UNIQUE SCAN          | XPK_APPLICATION          |     1 |       |     1   (0)| 00:00:01 |
+|* 16 |        INDEX UNIQUE SCAN            | XPK_MEMBER               |     1 |       |     1   (0)| 00:00:01 |
+|* 17 |       TABLE ACCESS BY INDEX ROWID   | MEMBER                   |     1 |    17 |     2   (0)| 00:00:01 |
+|* 18 |     TABLE ACCESS BY INDEX ROWID     | ALLIANCE_INFORMATION     |     1 |    15 |     2   (0)| 00:00:01 |
+|* 19 |      INDEX UNIQUE SCAN              | XPK_ALLIANCE_INFORMATION |     1 |       |     1   (0)| 00:00:01 |
+----------------------------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(SYS_AUDIT(CASE SYS_CONTEXT('EHI_SEC_CTX','PHI_AUDIT_VLAN') WHEN '1' THEN 1 ELSE NULL END
+              ,'EHADMIN','MEMBER','FGA_DB_MEMBER_POLICY',3) IS NULL)
+   3 - filter("APP"."ALLIANCE_ID" IS NULL OR "APP"."ALLIANCE_ID" IS NOT NULL AND  EXISTS (SELECT 0 FROM
+              "ALLIANCE_INFORMATION" "ALLIANCE_INFORMATION" WHERE "ALLIANCE_ID"=:B1 AND "CATEGORY_ID"<>33))
+   4 - filter(SYS_AUDIT(CASE SYS_CONTEXT('EHI_SEC_CTX','PHI_AUDIT_VLAN') WHEN '1' THEN 1 ELSE NULL END
+              ,'EHADMIN','PHONE','FGA_DB_PHONE_POLICY',3) IS NULL)
+  10 - access("PHONE_NUMBER"='001-0001')
+       filter(TO_NUMBER("AREA_CODE")=001 AND "APPLICATION_ID"<>15239167)
+  11 - access("APPLICATION_ID"="SP"."APPLICATION_ID")
+       filter("SP"."APPLICATION_ID"<>15239167)
+  12 - filter("C"."PRODUCTLINE_TYPE"='MA' OR "C"."PRODUCTLINE_TYPE"='MC' OR "C"."PRODUCTLINE_TYPE"='MD'
+              OR "C"."PRODUCTLINE_TYPE"='MS')
+  13 - access("C"."CARRIER_ID"="SP"."CARRIER_ID")
+  15 - access("SP"."APPLICATION_ID"="APP"."APPLICATION_ID")
+       filter("APP"."APPLICATION_ID"<>15239167)
+  16 - access("APPLICATION_ID"="APP"."APPLICATION_ID" AND "MEMBER_NUMBER"=1)
+       filter("APPLICATION_ID"<>15239167)
+  17 - filter(UPPER("FIRST_NAME")='FN')
+  18 - filter("CATEGORY_ID"<>33)
+  19 - access("ALLIANCE_ID"=:B1)
+
+Note
+-----
+   - dynamic statistics used: dynamic sampling (level=2)
+   - this is an adaptive plan
+   - 2 Sql Plan Directives used for this statement
+
+
+Statistics
+----------------------------------------------------------
+          0  recursive calls
+          0  db block gets
+     257668  consistent gets
+          0  physical reads
+          0  redo size
+       1508  bytes sent via SQL*Net to client
+        574  bytes received via SQL*Net from client
+          4  SQL*Net roundtrips to/from client
+          0  sorts (memory)
+          0  sorts (disk)
+         36  rows processed
+
+SQL>

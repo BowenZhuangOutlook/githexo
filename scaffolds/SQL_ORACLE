@@ -89,4 +89,9 @@ and    ss.sid(+) = s.final_blocking_session
 and    s.machine<>'XMLENG575'
 and    s.module<>'GoldenGate'
 and    s.event <>'PL/SQL lock timer'
-ORDER BY s.username, s.osuser; 
+ORDER BY s.username, s.osuser;
+
+
+
+SELECT view_definition FROM v$fixed_view_definition
+       WHERE view_name='GV$ARCHIVED_LOG';
