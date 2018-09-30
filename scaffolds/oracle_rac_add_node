@@ -1,15 +1,17 @@
 1. olsnodes -n -t -s(good node)
 2. rm -rf grid/oracle home
-3. srvctl stop vip -i badnode -f
-   srvctl remove vip -i badnode -f
-4. crsctl delete node -n badnode
-5. mv crsdata/crsconfig/xxx.xml
-6. /u01/app/grid/12.1.0.2/oui/bin/runInstaller -updateNodeList ORACLE_HOME=/u01/app/grid/12.1.0.2 "CLUSTER_NODES={sjengopdb02}"
-   /u01/app/oracle/product/12.1.0/dbhome_2/oui/bin/runInstaller -updateNodeList ORACLE_HOME=/u01/app/oracle/product/12.1.0/dbhome_2 "CLUSTER_NODES={sjengopdb02}"
+3. /u01/app/grid/12.1.0.2/bin/srvctl stop vip -i badnode -f
+   /u01/app/grid/12.1.0.2/bin/srvctl remove vip -i badnode -f
+4. /u01/app/grid/12.1.0.2/bin/crsctl delete node -n badnode
+5. dbca remove bad instance
+6. rm inventory in bad instance and rm /etc/ora*
+5. mv crsdata/crsconfig/ckptGridHA_sjengopdb01.xml
+6. /u01/app/grid/12.1.0.2/oui/bin/runInstaller -updateNodeList ORACLE_HOME=/u01/app/grid/12.1.0.2 "CLUSTER_NODES={sjengopdb01}"
+   /u01/app/oracle/product/12.1.0/dbhome_2/oui/bin/runInstaller -updateNodeList ORACLE_HOME=/u01/app/oracle/product/12.1.0/dbhome_2 "CLUSTER_NODES={sjengopdb01}"
 7. cd /u01/app/grid/12.1.0.2/addnode
-   ./addnode.sh "CLUSTER_NEW_NODES={sjengopdb01}" "CLUSTER_NEW_VIRTUAL_HOSTNAMES={sjengopdb01-vip}"
+   ./addnode.sh "CLUSTER_NEW_NODES={sjengopdb02}" "CLUSTER_NEW_VIRTUAL_HOSTNAMES={sjengopdb02-vip}"
 8. cd $ORACLE_HOME/addnode
-   ./addnode.sh "CLUSTER_NEW_NODES={sjengopdb01}"
+   ./addnode.sh "CLUSTER_NEW_NODES={sjengopdb02}"
 9. dbca
 
 
