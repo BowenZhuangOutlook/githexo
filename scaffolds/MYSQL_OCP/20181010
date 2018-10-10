@@ -1,0 +1,79 @@
+
+1. mysql command point
+
+- The output format can be changed using command options.
+interactive -- ASCII-table format
+noninteractive  -- tab-separated format
+- large result and insufficient memory ,we can use --quick option(quert a row from server at a time)
+- On Unix, the mysql client logs statements executed interactively to a history file.
+
+2. mysqladmin command point
+
+- check service configure and current status and create or drop Database.
+- debug option need to super privilege.
+- If you execute mysqladmin shutdown when connecting to a local server using a Unix socket file, mysqladmin waits until the server's process ID file has been removed,
+   to ensure that the server has stopped properly.
+
+3. mysqlcheck command point
+
+- performs table maintenance: It check table, repair table, optimize table, or analyzes table.
+   MyISAM support all four maintenance operations.
+   Innodb not support repair
+- it is lock table
+- mysql_upgrade invokes mysqlcheck all tables and repair them if necessary
+- myisamchk need to stop server, mysqlcheck need to server is running
+
+4. ANALYZE TABLE
+
+- This statement requires SELECT and INSERT privileges for the table.
+- support innodb and MyISAM and NDB tables and partitioned tables. it does not work with views.
+- handler read lock
+- analyzes can replication to slave, we avoid it via NO_WRITE_TO_BINLOG  keyword.
+- innodb_stats_persistent  用于设置统计信息持久化，重启实例会被清空 -- data save to mysql.innodb_table_stats and mysql.innodb_index_stats
+   innodb_stats_auto_recalc 用于设置自动收集统计信息的  默认是10% ，可以通过 STATS_AUTO_RECALC 创建表/更改表语句时指定
+- innodb_stats_persistent, innodb_stats_auto_recalc, and innodb_stats_persistent_sample_pages are global configuration options
+- innodb_stats_include_delete_marked 默认情况下innodb的分析，会读取未提交的数据，可能会导致统计信息不准确，可以通过启用该参数来避免读取未提交数据导致的统计信息失误问题
+
+
+5. CHECK TABLE
+
+- For MyISAM tables, the key statistics are updated as well.  CHECK TABLE can also check views for problems,
+   such as tables that are referenced in the view definition that no longer exist.
+- support innodb and MyISAM and archive and support partitioned table
+- When an InnoDB table is stored in its own .ibd file, the first 3 pages of the .ibd file contain header information rather than table or index data.
+   The CHECK TABLE statement does not detect inconsistencies that affect only the header dat- To verify the entire contents of an InnoDB .ibd file, use the innochecksum command
+
+6. CHECKSUM TABLE
+
+7. OPTIMIZE TABLE
+
+- OPTIMIZE TABLE reorganizes the physical storage of table data and associated index data, to reduce storage space and improve I/O efficiency when accessing the table.
+- innodb_file_per_table开启的情况下，innodb表可以重新主机表和索引数据，到达缩小使用空间的目的。
+- 含有fulltext索引的innodb table ，需要设置innodb_optimize_fulltext_only=1，并且设置到innodb_ft_num_word_optimize参数
+- SELECT and INSERT privileges for the table.
+- support innodb and MyISAM
+- For InnoDB tables, OPTIMIZE TABLE is mapped to ALTER TABLE ... FORCE, which rebuilds the table to update index statistics and free unused space in the clustered index.
+   old_alter_table is enabled or  mysqld --skip-new option is enabled
+- For MyISAM, repair the table;sort index page;update table's statistics;
+
+8. repair Table
+
+- SELECT and INSERT privileges for the table.
+- not support innodb engine.
+
+
+9. Innodb表的限制
+
+- 1017 columns
+- 64 secondary indexes.
+- index key prefix length limit is 767 bytes(default), if innodb_large_prefix is enabled, it is 3072 bytes. please note character set and it refer to innodb_page_size
+- A maximum of 16 columns is permitted for multicolumn indexes
+- InnoDB Maximum Tablespace Size;
+  InnoDB Page Size	Maximum Tablespace Size
+                4KB	 16TB
+                8KB	 32TB
+                16KB 64TB
+- max_seeks_for_key 参数，是用于控制数据库是否倾向使用索引的
+- innodb_autoinc_lock_mode
+
+10. InnoDB AUTO_INCREMENT Lock Modes
